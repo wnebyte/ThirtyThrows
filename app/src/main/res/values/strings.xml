@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ThirtyThrows</string>
+    <string name="die_image_white_content_description">png</string>
+    <string name="throw_button_text">Throw</string>
+    <string name="commit_button_text">Commit</string>
+    <string name="table_header_1">Round</string>
+    <string name="table_header_2">Scoring System</string>
+    <string name="table_header_3">Score</string>
+    <string name="table_row_1_col_1">1</string>
+    <string name="table_row_2_col_1">2</string>
+    <string name="table_row_3_col_1">3</string>
+    <string name="table_row_4_col_1">4</string>
+    <string name="table_row_5_col_1">5</string>
+    <string name="table_row_6_col_1">6</string>
+    <string name="table_row_7_col_1">7</string>
+    <string name="table_row_8_col_1">8</string>
+    <string name="table_row_9_col_1">9</string>
+    <string name="table_row_10_col_1">10</string>
+    <string name="table_row_11_col_1">Total</string>
+</resources>
