@@ -2,68 +2,55 @@ package com.github.wnebyte.thirtythrows.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.github.wnebyte.thirtythrows.util.Rand
+import android.util.Range
 import java.lang.IllegalArgumentException
+import java.util.*
+import com.github.wnebyte.thirtythrows.ext.BooleanExt.Companion.fromInt
+import com.github.wnebyte.thirtythrows.ext.BooleanExt.Companion.toInt
+import com.github.wnebyte.thirtythrows.ext.RandomExt.Companion.nextInt
 
 /**
  * Die model class.
  */
-data class Die(val number: Int = Rand.int(6),
+data class Die(val value: Int = Random().nextInt(1, 6),
                var throwAgain: Boolean = true,
-               var group: Int = 0) : Parcelable {
+               val id: UUID = UUID.randomUUID()
+): Parcelable {
+
+    private constructor(parcel: Parcel) : this(
+            value = parcel.readInt(),
+            throwAgain = Boolean.fromInt(parcel.readInt()),
+            id = UUID.fromString(parcel.readString())
+    )
+
     init {
-        if (number < 1 || 6 < number) {
-            throw IllegalArgumentException("number must be between 1 and 6.")
-        }
-
-        if (group < 0 || 6 < group) {
-            throw IllegalArgumentException("group must be between 0 and 6.")
-        }
-    }
-
-    fun toggleGroup() {
-        if (group == 6) {
-            group = 0
-        }
-        else {
-            group++
+        if (!Range(1, 6).contains(value)) {
+            throw IllegalArgumentException(
+                    "number must be between 1 and 6."
+            )
         }
     }
 
     companion object {
+
+        fun newInstance(): Die = Die()
+
+        fun newInstance(value: Int): Die = Die(value)
+
         @JvmField
         val CREATOR = object : Parcelable.Creator<Die> {
 
             override fun createFromParcel(parcel: Parcel): Die = Die(parcel)
 
-            override fun newArray(size: Int): Array<Die?> = arrayOfNulls<Die>(size)
-        }
-
-        private fun toInt(bool: Boolean): Int {
-            return if (bool) {
-                1
-            } else {
-                0
-            }
-        }
-
-        private fun toBoolean(int: Int): Boolean {
-            return int != 0
+            override fun newArray(size: Int): Array<Die?> = arrayOfNulls(size)
         }
     }
 
-    private constructor(parcel: Parcel) : this(
-            number = parcel.readInt(),
-            throwAgain = toBoolean(parcel.readInt()),
-            group = parcel.readInt()
-    )
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(number)
-        parcel.writeInt(toInt(throwAgain))
-        parcel.writeInt(group)
+        parcel.writeInt(value)
+        parcel.writeInt(throwAgain.toInt())
+        parcel.writeString(id.toString())
     }
 
     override fun describeContents(): Int = 0
-
 }
