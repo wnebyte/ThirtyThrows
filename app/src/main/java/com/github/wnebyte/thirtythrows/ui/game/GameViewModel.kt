@@ -65,6 +65,10 @@ class GameViewModel(private val state: SavedStateHandle)
         return spinnerItems
     }
 
+    /**
+     * Increments `throws` and returns the result.
+     * @return the incremented `throws`.
+     */
     fun incrementThrows(): Int {
         _throws = when (throws) {
             MAX_THROWS -> 0
@@ -73,16 +77,37 @@ class GameViewModel(private val state: SavedStateHandle)
         return throws
     }
 
-    fun isEndOf(): Boolean {
+    /**
+     * Returns whether the game is over.
+     * @return `true` if the game is over,
+     * otherwise `false`.
+     */
+    fun isEndOfGame(): Boolean {
         return (rounds.size == MAX_ROUND) && (throws == MAX_THROWS)
     }
 
+    /**
+     * Returns whether the round is over.
+     * @return `true` if the round is over,
+     * otherwise `false`.
+     */
+    fun isEndOfRound(): Boolean {
+        return (throws == MAX_THROWS)
+    }
+
+    /**
+     * Calculates and saves the score for the current round.
+     * @return the score.
+     */
     fun nextRound(): Int {
         val round = Round.newInstance(dice.toSet(), selectedItem)
         rounds.add(round)
         return round.score
     }
 
+    /**
+     * Updates this ViewModel's internal persistent state.
+     */
     fun saveViewModelState() {
         state[DICE_STATE_KEY] = dice
         state[ROUNDS_STATE_KEY] = rounds
@@ -91,6 +116,9 @@ class GameViewModel(private val state: SavedStateHandle)
         state[SPINNER_ITEMS_KEY] = spinnerItems
     }
 
+    /**
+     * Removes any internal persistent state of this ViewModel.
+     */
     fun destroyViewModelState() {
         state.remove<ArrayList<Die>>(DICE_STATE_KEY)
         state.remove<ArrayList<Round>>(ROUNDS_STATE_KEY)
@@ -101,8 +129,14 @@ class GameViewModel(private val state: SavedStateHandle)
 
     companion object {
 
+        /**
+         * The number of rounds in a game.
+         */
         const val MAX_ROUND: Int = 10
 
+        /**
+         * The number of throws in a round.
+         */
         const val MAX_THROWS: Int = 3
     }
 }

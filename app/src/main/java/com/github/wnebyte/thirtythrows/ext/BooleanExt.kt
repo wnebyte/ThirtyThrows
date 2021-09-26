@@ -1,5 +1,8 @@
 package com.github.wnebyte.thirtythrows.ext
 
+/**
+ * This class declares extension functions for the [Boolean] class.
+ */
 class BooleanExt {
 
     companion object {

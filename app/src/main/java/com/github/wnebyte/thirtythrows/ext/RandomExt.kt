@@ -3,6 +3,9 @@ package com.github.wnebyte.thirtythrows.ext
 import java.lang.IllegalArgumentException
 import java.util.Random
 
+/**
+ * This class declares extension functions for the [Random] class.
+ */
 class RandomExt {
 
     companion object {

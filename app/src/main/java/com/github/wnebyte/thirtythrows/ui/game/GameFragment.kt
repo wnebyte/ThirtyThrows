@@ -103,7 +103,7 @@ class GameFragment : Fragment() {
         (resources.getString(R.string.tv_throw) + vm.throws.toString())
                 .also { binding.throwTv.text = it }
         binding.button.text = when {
-            vm.isEndOf() -> {
+            vm.isEndOfGame() -> {
                 resources.getString(R.string.btn_result)
             }
             vm.throws == GameViewModel.MAX_THROWS -> {
@@ -115,6 +115,9 @@ class GameFragment : Fragment() {
         }
     }
 
+    /**
+     * @return a `View.OnClickListener` to handle input events on this Fragment's sole button.
+     */
     private fun onButtonPressed(): View.OnClickListener {
         return View.OnClickListener {
             when (vm.throws) {
@@ -146,7 +149,7 @@ class GameFragment : Fragment() {
                     vm.dice[index] = Die.newInstance(die.value)
                 }
             }
-            if (vm.isEndOf()) {
+            if (vm.isEndOfGame()) {
                 saveState = false
                 callbacks?.onLastThrow(vm.rounds.toTypedArray())
             }
@@ -183,6 +186,10 @@ class GameFragment : Fragment() {
             binding.dieImage.setOnClickListener(this)
         }
 
+        /**
+         * Binds an instance of the [Die] class to the UI.
+         * @param die to be bound.
+         */
         fun bind(die: Die) {
             this.die = die
             val resId: Int
@@ -234,8 +241,15 @@ class GameFragment : Fragment() {
             binding.dieImage.setImageResource(resId)
         }
 
+        /**
+         * Handles a clickEvent on an instance of the [Die] class currently bound to the UI.
+         */
         override fun onClick(v: View) {
-            if (vm.throws == 3) {
+            /*
+            don't negate the throwAgain property if there are no more throws
+            in the current round.
+             */
+            if (vm.isEndOfRound()) {
                 return
             }
             die.throwAgain = !die.throwAgain
@@ -243,6 +257,10 @@ class GameFragment : Fragment() {
         }
     }
 
+    /**
+     * This class is responsible for adapting an instance of the [Die] class to a structure
+     * that is appropriate for display on the UI.
+     */
     private inner class DieAdapter : ListAdapter<Die, DieHolder>(diff) {
 
         override fun onCreateViewHolder(

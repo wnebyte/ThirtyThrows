@@ -10,19 +10,30 @@ import com.github.wnebyte.thirtythrows.ext.BooleanExt.Companion.toInt
 import com.github.wnebyte.thirtythrows.ext.RandomExt.Companion.nextInt
 
 /**
- * Die model class.
+ * This class represents a parcelable, six-sided die that can find it self being in one of two
+ * mutable states.
+ */
+/*
+this class has an id field so that two die of the same value/state do not equal one another.
  */
 data class Die(val value: Int = Random().nextInt(1, 6),
                var throwAgain: Boolean = true,
                val id: UUID = UUID.randomUUID()
 ): Parcelable {
 
+    /**
+     * Constructs a new instance using the specified [parcel].
+     * @param parcel to be used.
+     */
     private constructor(parcel: Parcel) : this(
             value = parcel.readInt(),
             throwAgain = Boolean.fromInt(parcel.readInt()),
             id = UUID.fromString(parcel.readString())
     )
 
+    /*
+    does not allow the construction of a die with a value outside the inclusive range (1,6).
+     */
     init {
         if (!Range(1, 6).contains(value)) {
             throw IllegalArgumentException(
@@ -33,8 +44,17 @@ data class Die(val value: Int = Random().nextInt(1, 6),
 
     companion object {
 
+        /**
+         * Constructs a new instance with default parameters.
+         * @return a new `die` instance.
+         */
         fun newInstance(): Die = Die()
 
+        /**
+         * Constructs a new instance using the specified [value].
+         * @param value to be assigned to the new instance.
+         * @return a new `die` instance.
+         */
         fun newInstance(value: Int): Die = Die(value)
 
         @JvmField
